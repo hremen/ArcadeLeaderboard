@@ -24,12 +24,22 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
     ports:
       - "9090:9090"
     depends_on:
       app:
         condition: service_healthy
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: arcade-alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "9093:9093"
 
   grafana:
     image: grafana/grafana:latest
