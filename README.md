@@ -6,48 +6,6 @@ Ce dossier contient l'API et les tests unitaires **déjà écrits** pour
 l'évaluation Cyber. Voir `Evaluation_Cyber_Arcade_Leaderboard.md` pour
 l'énoncé complet et ce qui est attendu de vous.
 
-## Structure du projet
-
-```
-ArcadeLeaderboard/
-├─ app/                            # API FastAPI (code fourni)
-│  ├─ main.py                      # routes HTTP + middleware metriques
-│  ├─ business.py                  # logique metier (anti-triche, classement, cooldown)
-│  ├─ storage.py                   # persistance SQLite
-│  ├─ metrics.py                   # metriques Prometheus
-│  ├─ models.py                    # schemas Pydantic
-│  └─ games.py                     # referentiel des jeux et scores max
-├─ tests/                          # tests fournis (pytest)
-│  ├─ test_business.py             # tests unitaires de la logique metier
-│  ├─ test_api.py                  # tests d'integration HTTP
-│  └─ conftest.py                  # fixture base isolee
-├─ prometheus/
-│  ├─ prometheus.yml               # scrape de l'API + config alerting
-│  └─ alert_rules.yml              # 4 regles d'alerte
-├─ alertmanager/
-│  └─ alertmanager.yml             # routage des alertes
-├─ grafana/
-│  ├─ provisioning/
-│  │  ├─ datasources/datasource.yml   # datasource Prometheus
-│  │  └─ dashboards/dashboard.yml     # provider de dashboards
-│  └─ dashboards/arcade.json       # dashboard (trafic, latence, erreurs, triche)
-├─ k6/
-│  └─ load-test.js                 # test de charge (ramp-up)
-├─ k8s/                            # bonus Kubernetes
-│  ├─ deployment.yaml              # Deployment + probes readiness/liveness
-│  └─ service.yaml                 # Service NodePort
-├─ .github/workflows/
-│  └─ ci.yml                       # pipeline CI (lint, tests, SAST, deps, Trivy)
-├─ Dockerfile                      # multi-stage (dev / prod)
-├─ docker-compose.yml              # stack prod (app + monitoring)
-├─ docker-compose.override.yml     # surcharge dev (hot-reload, logs debug)
-├─ .dockerignore
-├─ requirements.txt                # dependances runtime
-├─ requirements-dev.txt            # + tests et linter
-├─ pyproject.toml                  # config pytest / ruff
-└─ README.md
-```
-
 ## Lancer l'API en local
 
 ```bash
