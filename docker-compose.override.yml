@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      target: development
+    container_name: arcade-api-dev
+    restart: "no"
+    volumes:
+      - ./app:/app/app
+    environment:
+      - UVICORN_LOG_LEVEL=debug
