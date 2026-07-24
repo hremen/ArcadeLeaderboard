@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arcade-api
+  labels:
+    app: arcade-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: arcade-api
+  template:
+    metadata:
+      labels:
+        app: arcade-api
+    spec:
+      containers:
+        - name: arcade-api
+          image: arcade-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_PATH
+              value: /data/scores.db
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+      volumes:
+        - name: data
+          emptyDir: {}
