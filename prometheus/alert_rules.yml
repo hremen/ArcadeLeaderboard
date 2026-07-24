@@ -1,0 +1,38 @@
+groups:
+  - name: arcade_alerts
+    rules:
+      - alert: ServiceDown
+        expr: up{job="arcade-api"} == 0
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "API indisponible"
+          description: "L'API arcade n'est plus joignable depuis plus de 10 secondes."
+
+      - alert: HighLatencyP95
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le)) > 0.5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latence elevee (p95 > 500ms)"
+          description: "Le 95e percentile de latence depasse 500ms depuis plus de 30 secondes."
+
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[1m])) / sum(rate(http_requests_total[1m])) > 0.1
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Taux d'erreur eleve (>10% de 5xx)"
+          description: "Plus de 10% des requetes retournent un code 5xx."
+
+      - alert: CheatSpike
+        expr: sum(rate(scores_rejected_total[1m])) > 5
+        for: 15s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pic de tentatives de triche"
+          description: "Plus de 5 rejets de score par seconde detectes."
