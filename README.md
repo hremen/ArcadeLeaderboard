@@ -103,6 +103,9 @@ Les scores sont stockes dans une base SQLite sur un volume Docker (`app_data`), 
 |---------|-----|-------|
 | API | http://localhost:8000 | - |
 | Swagger | http://localhost:8000/docs | - |
+| Grafana | http://localhost:3000 | admin / admin |
+| Prometheus | http://localhost:9090 | - |
+| Alertmanager | http://localhost:9093 | - |
 
 ## CI
 
@@ -114,6 +117,36 @@ Le pipeline GitHub Actions (`.github/workflows/ci.yml`) tourne a chaque push sur
 4. Scan des dependances avec `pip-audit`
 5. Build de l'image Docker
 6. Scan de l'image avec Trivy
+
+## Monitoring
+
+Prometheus scrape `/metrics` toutes les 5 secondes. Un dashboard Grafana est provisionne automatiquement avec :
+
+- Requetes par seconde par route
+- Latence p95
+- Taux d'erreurs (4xx/5xx)
+- Tentatives de triche (scores rejetes)
+- Scores soumis par jeu
+- Consultations du classement
+
+## Alertes
+
+4 alertes dans `prometheus/alert_rules.yml` :
+
+- **ServiceDown** : l'API ne repond plus depuis 10s
+- **HighLatencyP95** : latence p95 > 500ms pendant 30s
+- **HighErrorRate** : plus de 10% de 5xx pendant 30s
+- **CheatSpike** : plus de 5 rejets/s pendant 15s
+
+Pour tester : `docker stop arcade-api` et regarder dans Prometheus > Alerts.
+
+## Test de charge
+
+```bash
+k6 run k6/load-test.js
+```
+
+Monte de 5 a 50 utilisateurs virtuels sur 90 secondes, on voit l'impact dans Grafana.
 
 ## Kubernetes (bonus)
 
@@ -130,3 +163,5 @@ Probes readiness et liveness sur `/health`.
 
 - **Dockerfile multi-stage** : un stage dev avec les deps de test et le hot-reload, un stage prod minimal.
 - **docker-compose.override.yml** : mecanisme natif de Docker Compose pour separer dev et prod.
+- **Alertmanager** : pour recevoir les alertes Prometheus, branchable sur mail ou Slack.
+- **k6** : simple a ecrire et supporte les stages de ramp-up.
