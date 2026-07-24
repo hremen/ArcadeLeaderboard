@@ -159,6 +159,11 @@ kubectl port-forward svc/arcade-api 8000:8000
 
 Probes readiness et liveness sur `/health`.
 
+> Note : le Deployment tourne en `replicas: 1`. La base SQLite est stockee dans un
+> volume `emptyDir` propre au pod ; passer a plusieurs replicas donnerait des bases
+> independantes (classements incoherents). Pour scaler il faudrait une base partagee
+> (hors scope de ce bonus).
+
 ## Choix techniques
 
 - **Dockerfile multi-stage** : un stage dev avec les deps de test et le hot-reload, un stage prod minimal.
