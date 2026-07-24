@@ -206,6 +206,23 @@ Probes readiness et liveness sur `/health`.
 > independantes (classements incoherents). Pour scaler il faudrait une base partagee
 > (hors scope de ce bonus).
 
+## Captures d'ecran
+
+### CI verte
+Pipeline GitHub Actions : lint, tests, bandit, pip-audit, build et scan Trivy.
+
+![Pipeline CI vert](docs/ci-verte.png)
+
+### Dashboard Grafana
+Trafic, latence p95, erreurs, tentatives de triche, scores soumis et consultations.
+
+![Dashboard Grafana](docs/grafana-dashboard.png)
+
+### Alerte declenchee (ServiceDown)
+Alerte passee en FIRING apres l'arret de l'API.
+
+![Alerte ServiceDown en FIRING](docs/alerte-servicedown.png)
+
 ## Choix techniques
 
 - **Dockerfile multi-stage** : un stage dev avec les deps de test et le hot-reload, un stage prod minimal.
